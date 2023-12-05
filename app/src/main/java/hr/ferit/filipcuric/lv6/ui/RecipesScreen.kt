@@ -300,6 +300,6 @@ fun RecipeCard(
                         Chip(text = "4 ingredients")
                     }
                 }
-        }
+            }
         }
 }
