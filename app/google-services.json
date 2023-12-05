@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "271476641529",
+    "project_id": "orwmalv8-curic",
+    "storage_bucket": "orwmalv8-curic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271476641529:android:733a32ca6e6358ae659c28",
+        "android_client_info": {
+          "package_name": "hr.ferit.filipcuric.lv6"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdn7BHLQjuEZiaSNG52bpA-x-0c7ot5nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
