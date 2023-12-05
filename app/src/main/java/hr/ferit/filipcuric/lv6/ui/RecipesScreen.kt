@@ -3,6 +3,7 @@ package hr.ferit.filipcuric.lv6.ui
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +28,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,17 +42,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.util.Log
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import hr.ferit.filipcuric.lv6.ui.theme.DarkGray
 import hr.ferit.filipcuric.lv6.R
+import hr.ferit.filipcuric.lv6.Routes
+import hr.ferit.filipcuric.lv6.data.Recipe
+import hr.ferit.filipcuric.lv6.data.recipes
 import hr.ferit.filipcuric.lv6.ui.theme.LightGray
 import hr.ferit.filipcuric.lv6.ui.theme.Pink
 import hr.ferit.filipcuric.lv6.ui.theme.White
 
-@Preview(showBackground = true)
 @Composable
-fun RecipesScreen() {
+fun RecipesScreen(
+    navigation: NavController
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,10 +75,7 @@ fun RecipesScreen() {
             labelText = "Search..."
         )
         RecipeCategories()
-        RecipeCard(
-            imageResource = R.drawable.strawberry_pie_1,
-            title = "Strawberry Cake"
-        )
+        RecipeList(recipes = recipes, navigation = navigation)
         IconButton(
             iconResource = R.drawable.ic_plus,
             text = "Add new recipe"
@@ -175,7 +183,7 @@ fun TabButton(
 
 @Composable
 fun RecipeCategories() {
-    var currentActiveButton by remember { mutableStateOf(0) }
+    var currentActiveButton by remember { mutableIntStateOf(0) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -264,12 +272,14 @@ fun Chip(
 fun RecipeCard(
     @DrawableRes imageResource: Int,
     title: String,
+    onClick: () -> Unit
 ) {
         Card(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .height(326.dp)
                 .width(215.dp)
+                .clickable { onClick() }
         ) {
             Box (
                 contentAlignment = Alignment.BottomStart,
@@ -302,4 +312,51 @@ fun RecipeCard(
                 }
             }
         }
+}
+
+@Composable
+fun RecipeList(
+    recipes: List<Recipe>,
+    navigation: NavController
+) {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Text(
+                text = "7 recipes",
+                style = TextStyle(color = Color.DarkGray, fontSize =
+                14.sp)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_flame),
+                contentDescription = "Flame",
+                tint = Color.DarkGray,
+                modifier = Modifier
+                    .width(18.dp)
+                    .height(18.dp)
+            )
+        }
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            items(recipes.size) {
+                RecipeCard(
+                    imageResource = recipes[it].image,
+                    title = recipes[it].title
+                ) {
+                    navigation.navigate(
+                        Routes.getRecipeDetailsPath(it)
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+        }
+    }
 }
