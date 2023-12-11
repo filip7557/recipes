@@ -41,24 +41,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.media3.common.util.Log
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import hr.ferit.filipcuric.lv6.ui.theme.DarkGray
 import hr.ferit.filipcuric.lv6.R
 import hr.ferit.filipcuric.lv6.Routes
-import hr.ferit.filipcuric.lv6.data.Recipe
-import hr.ferit.filipcuric.lv6.data.recipes
+import hr.ferit.filipcuric.lv6.data.RecipeViewModel
 import hr.ferit.filipcuric.lv6.ui.theme.LightGray
 import hr.ferit.filipcuric.lv6.ui.theme.Pink
 import hr.ferit.filipcuric.lv6.ui.theme.White
 
 @Composable
 fun RecipesScreen(
+    viewModel: RecipeViewModel,
     navigation: NavController
 ) {
     Column(
@@ -75,7 +72,7 @@ fun RecipesScreen(
             labelText = "Search..."
         )
         RecipeCategories()
-        RecipeList(recipes = recipes, navigation = navigation)
+        RecipeList(viewModel = viewModel, navigation = navigation)
         IconButton(
             iconResource = R.drawable.ic_plus,
             text = "Add new recipe"
@@ -270,7 +267,7 @@ fun Chip(
 
 @Composable
 fun RecipeCard(
-    @DrawableRes imageResource: Int,
+    imageResource: String,
     title: String,
     onClick: () -> Unit
 ) {
@@ -287,7 +284,7 @@ fun RecipeCard(
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = painterResource(id = imageResource),
+                    painter = rememberAsyncImagePainter(model = imageResource),
                     contentDescription = title,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -316,7 +313,7 @@ fun RecipeCard(
 
 @Composable
 fun RecipeList(
-    recipes: List<Recipe>,
+    viewModel: RecipeViewModel,
     navigation: NavController
 ) {
     Column {
@@ -346,10 +343,10 @@ fun RecipeList(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            items(recipes.size) {
+            items(viewModel.recipesData.size) {
                 RecipeCard(
-                    imageResource = recipes[it].image,
-                    title = recipes[it].title
+                    imageResource = viewModel.recipesData[it].image,
+                    title = viewModel.recipesData[it].title
                 ) {
                     navigation.navigate(
                         Routes.getRecipeDetailsPath(it)

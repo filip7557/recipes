@@ -40,9 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import hr.ferit.filipcuric.lv6.R
 import hr.ferit.filipcuric.lv6.data.Recipe
-import hr.ferit.filipcuric.lv6.data.recipes
+import hr.ferit.filipcuric.lv6.data.RecipeViewModel
 import hr.ferit.filipcuric.lv6.ui.theme.DarkGray
 import hr.ferit.filipcuric.lv6.ui.theme.Gray
 import hr.ferit.filipcuric.lv6.ui.theme.LightGray
@@ -51,10 +52,11 @@ import hr.ferit.filipcuric.lv6.ui.theme.White
 
 @Composable
 fun RecipeDetailsScreen(
+    viewModel: RecipeViewModel,
     navigation: NavController,
     recipeId: Int,
 ) {
-    val recipe = recipes[recipeId]
+    val recipe = viewModel.recipesData[recipeId]
 
     LazyColumn(
         verticalArrangement = Arrangement.Top,
@@ -63,7 +65,7 @@ fun RecipeDetailsScreen(
             .fillMaxSize()
     ) {
         item {
-            TopImageAndBar(coverImage = recipe.image, navigation = navigation)
+            TopImageAndBar(coverImage = recipe.image, viewModel = viewModel, recipe = recipe, navigation = navigation)
         }
         item {
             ScreenInfo(
@@ -136,13 +138,13 @@ fun IngredientsHeader() {
 
 @Composable
 fun IngredientCard(
-    @DrawableRes iconResource: Int,
+    iconResource: String,
     title: String,
     subtitle: String,
 ) {
         Column {
             Image(
-                painter = painterResource(id = iconResource),
+                painter = rememberAsyncImagePainter(model = iconResource),
                 contentDescription = title,
                 modifier = Modifier
                     .padding(10.dp)
@@ -239,7 +241,9 @@ fun CircularButton(
 
 @Composable
 fun TopImageAndBar(
-    @DrawableRes coverImage: Int,
+    coverImage: String,
+    viewModel: RecipeViewModel,
+    recipe: Recipe,
     navigation: NavController,
 ) {
     Box(
@@ -248,7 +252,7 @@ fun TopImageAndBar(
             .fillMaxWidth()
     ) {
         Image(
-            painter = painterResource(id = coverImage),
+            painter = rememberAsyncImagePainter(model = coverImage),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -271,7 +275,13 @@ fun TopImageAndBar(
                 CircularButton(iconResource = R.drawable.ic_arrow_back, color = Pink, onClick = {
                     navigation.popBackStack()
                 })
-                CircularButton(iconResource = R.drawable.ic_favorite)
+                CircularButton(
+                    iconResource = R.drawable.ic_favorite,
+                    color = if(recipe.isFavorited) Pink else DarkGray,
+                    onClick = {
+                    recipe.isFavorited = !recipe.isFavorited
+                    viewModel.updateRecipe(recipe)
+                })
             }
             Box(
                 modifier = Modifier

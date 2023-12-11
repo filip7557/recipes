@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import hr.ferit.filipcuric.lv6.data.RecipeViewModel
 import hr.ferit.filipcuric.lv6.ui.RecipeDetailsScreen
 import hr.ferit.filipcuric.lv6.ui.RecipesScreen
 
@@ -22,14 +23,19 @@ object Routes {
 }
 
 @Composable
-fun NavigationController() {
+fun NavigationController(
+    viewModel: RecipeViewModel
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = Routes.SCREEN_ALL_RECIPES
     ) {
         composable(Routes.SCREEN_ALL_RECIPES) {
-            RecipesScreen(navigation = navController)
+            RecipesScreen(
+                viewModel = viewModel,
+                navigation = navController,
+                )
         }
         composable(
             Routes.SCREEN_RECIPE_DETAILS,
@@ -42,6 +48,7 @@ fun NavigationController() {
             backStackEntry ->
                 backStackEntry.arguments?.getInt("recipeId")?.let {
                     RecipeDetailsScreen(
+                        viewModel = viewModel,
                         navigation = navController,
                         recipeId = it
                     )

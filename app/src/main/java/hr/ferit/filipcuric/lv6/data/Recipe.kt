@@ -1,21 +1,28 @@
 package hr.ferit.filipcuric.lv6.data
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import hr.ferit.filipcuric.lv6.R
 
-data class Recipe(
-    @DrawableRes val image: Int,
-    val title: String,
-    val category: String,
-    val cookingTime: String,
-    val energy: String,
-    val rating: String,
-    val description: String,
-    val reviews: String,
-    val ingredients: List<Ingredient>
-)
+class Recipe(
+    var id: String = "",
+    val image: String = "",
+    val title: String = "",
+    val category: String = "",
+    val cookingTime: String = "",
+    val energy: String = "",
+    val rating: String = "",
+    val description: String = "",
+    val reviews: String = "",
+    val ingredients: List<Ingredient> = listOf(),
+    isFavorited: Boolean = false,
+) {
+    var isFavorited by mutableStateOf(isFavorited)
+}
 
-val recipes: List<Recipe> = listOf(
+/*val recipes: List<Recipe> = listOf(
     Recipe(
         image = R.drawable.strawberry_pie_1,
         title = "Strawberry Cake",
@@ -92,4 +99,4 @@ val recipes: List<Recipe> = listOf(
             Ingredient(R.drawable.vanilla, "Vanilla", "1/2 teaspoon"),
         )
     )
-)
+)*/
